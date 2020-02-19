@@ -1,0 +1,13 @@
+name = "Singularity"
+uuid = "77356eb6-c8f9-4c49-b759-83080f9eb616"
+authors = ["Steffen Ridderbusch"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
