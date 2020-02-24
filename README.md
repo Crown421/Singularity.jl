@@ -22,5 +22,7 @@ The src folder will be copied into the container, and it is further assumed that
 Further work:
 - Generate different deffiles
 - add signing and pushing
+- add tests
+- add various error handling and options
 - (big) add singularity binary
 - (bigger) do some remote builder magic to make this work on windows/ mac (might be easy with Singularity hub)
