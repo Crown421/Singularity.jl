@@ -6,12 +6,12 @@ function buildsif(;verbose = false, force = true)
     ppath = dirname(Base.active_project(false))
 
     if force
-        cmd = `sudo singularity build --force container/packedproject.sif container/Singularity.pack`
+        cmd = `sudo singularity build --force container/projectcontainer.sif container/Singularity.pack`
     elseif !verbose
         @warn("Image already exists. To overwrite run verbose = true, or force = true")
         return
     else
-        cmd = `sudo singularity build container/packedproject.sif container/Singularity.pack`
+        cmd = `sudo singularity build container/projectcontainer.sif container/Singularity.pack`
     end
     
     g() = verbose ? run(cmd) : run(pipeline(cmd, stdout="container/pack.log"))
