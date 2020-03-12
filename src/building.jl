@@ -1,4 +1,4 @@
-export buildsif
+export buildsif, servertransfer
 
 # todo: as soon as there are option for file generation, take same options here
 # could possibly make g take arguments to be interpolated?
@@ -23,4 +23,18 @@ function buildsif(;verbose = false, force = true)
         @warn("Build failed")
     end
 
+end
+
+
+# ToDo: add 'prefix' to 
+function servertransfer(host)
+    ppath = dirname(Base.active_project(false))
+    pfolder = basename(ppath)
+
+    mkfolder = `ssh greyplover.stats mkdir -p $pfolder/data`
+    run(mkfolder)
+
+    transfer = `rsync -azP container/projectcontainer.sif $host:$pfolder`
+    g() = run(transfer)
+    cd(g, ppath)
 end

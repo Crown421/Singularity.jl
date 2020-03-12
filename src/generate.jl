@@ -76,7 +76,7 @@ function generate_deffile(; excludepkgs = [], commit = "master")
                 julia --project=/Project -e 'using Pkg;  Pkg.status()'
             else
                 # if theres an argument, then run it! and hope its a julia script :)
-                julia --project=/Project "/Project/scripts/$@" > "$@-$(date +"%FT%H%M%S").log"
+                julia --project=/Project -e "include(\\\"/Project/scripts/$@\\\")" > "$@-$(date +"%FT%H%M%S").log"
             fi
         """))
     end
