@@ -7,6 +7,19 @@ function generate_deffile(; excludepkgs = [], commit = "master")
     cpath = joinpath(ppath, "container")
     if !isdir(cpath)
         mkdir(cpath)
+        gitignore = joinpath(ppath, ".gitignore")
+        io = open(gitignore, "a+");
+        println(io, (raw"""
+
+        ########################################
+        #               Singularity                #
+        ########################################
+
+        *.sif
+        container/containerhome
+        """))
+        close(io)
+
     end
 
     singjl_path = joinpath(cpath, "Singularity.pack")
@@ -19,22 +32,11 @@ function generate_deffile(; excludepkgs = [], commit = "master")
         From: crown421/default/juliabase:latest
 
         %setup
+            dir=`pwd`
             git clone \
-            --depth 1 \
-            --filter=combine:blob:none+tree:0 \
-            --no-checkout \
-            "file://$(pwd)" \
+            "file://$dir" \
             ${SINGULARITY_ROOTFS}/Project
         """))
-
-        if commit != "master"
-            println(depsjl_file, (raw"""
-                cd ${SINGULARITY_ROOTFS}/Project
-            """))
-            println(depsjl_file, ("""
-                git fetch --depth 1 origin $commit
-            """))
-        end
 
         println(depsjl_file, strip(raw"""
         %post
@@ -45,15 +47,9 @@ function generate_deffile(; excludepkgs = [], commit = "master")
         """))
 
         # these are the variable things, unfortunately singularity build does not take arguments
-        if commit == "master"
-            println(depsjl_file, (raw"""
-                git checkout master -- src/ scripts/ Project.toml Manifest.toml
-            """))
-        else
-            println(depsjl_file, (raw"""
-                git checkout FETCH_HEAD -- src/ scripts/ Project.toml Manifest.toml
-            """))
-        end
+        println(depsjl_file, ("""
+            git checkout $commit -- src/ scripts/ Project.toml Manifest.toml
+        """))
 
         println(depsjl_file, ("""
             julia --project -e 'using Pkg; Pkg.rm.($excludepkgs)'
@@ -63,9 +59,7 @@ function generate_deffile(; excludepkgs = [], commit = "master")
         println(depsjl_file, (raw"""
             julia --project -e 'using Pkg; Pkg.instantiate()'
 
-            julia --project -e 'using Pkg; for pkg in collect(keys(Pkg.installed()))
-                Base.compilecache(Base.identify_package(pkg))
-            end'
+            julia --project -e 'using Pkg; Pkg.precompile()'
 
             chmod -R a+rX $JULIA_DEPOT_PATH
             chmod -R a+rX /Project/scripts
