@@ -1,8 +1,16 @@
 # Singularity
 
-This package provides a rough interface to create [Singularity containers](https://github.com/sylabs/singularity) from DrWatson Projects. 
-As fully featured Singularity is only available for linux, this package really only makes sense there.
+This package was presented at JuliaCon, and the presentation is available [under this link](https://musing-pare-2ba365.netlify.app/#/).
 
+This package provides a rough interface to create [Singularity containers](https://github.com/sylabs/singularity) from DrWatson Projects. 
+This package currently works best on Linux systems, as the build command currently not available on Mac. 
+
+### Basis
+This package uses a minimal debian-based container with Julia installed as a base. On the [Sylab cloud](https://cloud.sylabs.io/home) you can find the Juliabase image, and an experimental container also including jupyter
+- [juliabase](https://cloud.sylabs.io/library/_container/5e418a1b2758e9ed1175de24): 1.4.2, 1.3.1
+- [jupyterbase](https://cloud.sylabs.io/library/_container/5f20adbeae86dd3232dec1d1): 1.4.2
+
+If you would prefer to build them yourself, the def files are available in the `basebuilds` folder. 
 
 ### Assumptions: 
 The package assumes that that the folder structure contains the following elements
@@ -42,18 +50,16 @@ Builds the container image into the `container` folder based on the existing def
 - `force` set to `true` causes an existing image to be overwritten without asking for confirmation.
 
 ```
+    recreatedata(file::String; dir = [])
+```
+Extracts the git commit hash and script name from a `DrWatson.@tagsave`d file, and generated a def file. The resulting container, when `singularity run`, should recreate the initial file directly. 
+- `dir` allows the specification of a subdirectory of the `DrWatson.datadir()` directory.  
+
+```
     servertransfer(host)
 ```
 Transfers the image to the `host` into a folder in the home directory of the same name as the project folder. This assumed that everything is configured such that `ssh host` just works. 
 
-
-### Git setting
-To (shallow) clone via commit hash, it is necessary to set the following setting
-```
-git config --global uploadpack.allowReachableSHA1InWant true
-```
-This is somewhat unsafe however and not extremely efficient, because there might be a lot of commits, making the search for the right one inefficient, see also [here](https://stackoverflow.com/questions/26135216/why-isnt-there-a-git-clone-specific-commit-option) 
-The safety concern appear to mostly focus on git servers however, and this only affects the local git install, as the container clones from the local repo. 
 
 
 ## Further info
@@ -67,6 +73,6 @@ However for projects that are still under more rapid development, I have possibl
 - signing
 - add tests
 - add various error handling and options
-- (big) add singularity binary ?
-- (bigger) do some remote builder magic to make this work on windows/ mac
+- (big) do some remote builder magic to make this work on windows/ mac
   - Automate image build on repo push, as mentioned on [singularity hub](https://singularityhub.github.io/singularityhub-docs/docs/builds/automated)
+- (bigger) add singularity binary ?

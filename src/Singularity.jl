@@ -2,6 +2,10 @@ module Singularity
 
 include("generate.jl")
 include("building.jl")
+include("reproduce.jl")
+
+using FileIO
+using DrWatson
 
 function __init__()
     if !Sys.islinux()

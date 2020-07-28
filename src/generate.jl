@@ -2,7 +2,7 @@ export generate_deffile
 
 # todo: add options (files for compiling, precompiling, and just using the work folder)
 # last one is yet to be figured out
-function generate_deffile(; excludepkgs = [], commit = "master")
+function generate_deffile(; excludepkgs = [], commit = "master", script = [])
     ppath = dirname(Base.active_project(false))
     cpath = joinpath(ppath, "container")
     if !isdir(cpath)
@@ -40,7 +40,7 @@ function generate_deffile(; excludepkgs = [], commit = "master")
 
         println(depsjl_file, strip(raw"""
         %post
-            export JULIA_DEPOT_PATH=/opt/.julia
+            export JULIA_DEPOT_PATH=/user/.julia
             export PATH=/opt/julia/bin:$PATH
 
             cd Project
@@ -56,7 +56,7 @@ function generate_deffile(; excludepkgs = [], commit = "master")
         """))
 
 
-        println(depsjl_file, (raw"""
+        print(depsjl_file, (raw"""
             julia --project -e 'using Pkg; Pkg.instantiate()'
 
             julia --project -e 'using Pkg; Pkg.precompile()'
@@ -66,8 +66,22 @@ function generate_deffile(; excludepkgs = [], commit = "master")
 
         %runscript
             if [ -z "$@" ]; then
+        """))
+        if isempty(script)
+        print(depsjl_file, (raw"""
                 # if theres none, test julia:
                 julia --project=/Project -e 'using Pkg;  Pkg.status()'
+        """))
+        else
+        print(depsjl_file, ("""
+            SCRIPT=$script
+        """))
+        println(depsjl_file, (raw"""
+                # set specific script if given
+                julia --project=/Project -e "include(\\\"/Project/scripts/$SCRIPT\\\")" > "$SCRIPT-$(date +"%FT%H%M%S").log"
+        """))
+        end
+        println(depsjl_file, (raw"""
             else
                 # if theres an argument, then run it! and hope its a julia script :)
                 julia --project=/Project -e "include(\\\"/Project/scripts/$@\\\")" > "$@-$(date +"%FT%H%M%S").log"

@@ -17,6 +17,7 @@ function buildsif(;verbose = false, force = true)
     g() = verbose ? run(cmd) : run(pipeline(cmd, stdout="container/pack.log"))
 
     try
+        println("running $cmd")
         cd(g, ppath)
     catch
         # if !verbose
