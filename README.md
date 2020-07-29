@@ -3,7 +3,9 @@
 This package was presented at JuliaCon, and the presentation is available [under this link](https://musing-pare-2ba365.netlify.app/#/).
 
 This package provides a rough interface to create [Singularity containers](https://github.com/sylabs/singularity) from DrWatson Projects. 
-This package currently works best on Linux systems, as the build command currently not available on Mac. 
+It currently works best on Linux systems, as the build command currently not available on Mac. 
+
+Most of the code is still very WIP and based on my own processes and needs. If you use Singularity, or have a use case that I haven't considered yet, please reach out either by email or by opening an issue. 
 
 ## Install singularity
 The [Sylab documentation](https://sylabs.io/guides/3.0/user-guide/installation.html) contains instructions to install Singularity, but appears to be slightly out of date. 
