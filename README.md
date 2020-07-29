@@ -5,6 +5,15 @@ This package was presented at JuliaCon, and the presentation is available [under
 This package provides a rough interface to create [Singularity containers](https://github.com/sylabs/singularity) from DrWatson Projects. 
 This package currently works best on Linux systems, as the build command currently not available on Mac. 
 
+## Install singularity
+The [Sylab documentation](https://sylabs.io/guides/3.0/user-guide/installation.html) contains instructions to install Singularity, but appears to be slightly out of date. 
+You can find additional information for 
+- Linux on this [Github readme](https://github.com/hpcng/singularity/blob/master/INSTALL.md)
+- Mac on the [download page for the beta release](https://sylabs.io/singularity-desktop-macos/)
+- Windows, see this [this issue](https://github.com/hpcng/singularity/issues/4518) stating that WSL 2 is required ([instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10)). After installing it, follow the instructions for Linux. 
+
+Alternatively, you can use the [instructions for Vagrant](https://sylabs.io/guides/3.0/user-guide/installation.html#install-on-windows-or-mac) on Windows and Mac. 
+
 ### Basis
 This package uses a minimal debian-based container with Julia installed as a base. On the [Sylab cloud](https://cloud.sylabs.io/home) you can find the Juliabase image, and an experimental container also including jupyter
 - [juliabase](https://cloud.sylabs.io/library/_container/5e418a1b2758e9ed1175de24): 1.4.2, 1.3.1
